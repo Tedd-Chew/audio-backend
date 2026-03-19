@@ -1,0 +1,58 @@
+# Build outputs
+target/
+build/
+!**/src/main/**/target/
+!**/src/test/**/target/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# Maven
+.mvn/wrapper/maven-wrapper.jar
+
+# IDEs and editors
+.idea/
+.classpath
+.project
+.settings/
+*.iml
+*.iws
+*.ipr
+.apt_generated
+.factorypath
+.springBeans
+.sts4-cache
+.vscode/
+
+# NetBeans
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# Logs
+logs/
+*.log
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Test reports
+coverage/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/

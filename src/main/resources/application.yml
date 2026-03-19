@@ -1,0 +1,33 @@
+# 服务器配置
+server:
+  port: 8080 # 端口，如果你之前改了8081就换成8081
+
+# Spring 核心配置（包含你原来的 + 新增 Redis）
+spring:
+  # ========== 你原有：解决Swagger路径匹配冲突 ==========
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  # ========== 你原有：数据库配置（记得改密码） ==========
+  datasource:
+    url: jdbc:mysql://localhost:3306/audio_db?useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: root # 你的MySQL用户名
+    password: Zou1218yu # 改成你自己的MySQL密码！！！
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  # ========== 新增：Redis配置（核心） ==========
+  redis:
+    host: localhost        # Redis地址（本机不用改）
+    port: 6379             # Redis默认端口（不用改）
+    password: ''           # Redis密码（没设就空着）
+    database: 0            # 使用第0个库（新手不用改）
+    # Redis连接池配置（提升性能，必加）
+    lettuce:
+      pool:
+        max-active: 8      # 最大连接数
+        max-idle: 8        # 最大空闲连接
+        min-idle: 0        # 最小空闲连接
+
+# ========== 你原有：JWT配置 ==========
+jwt:
+  secret: AudiBackend2026IsGoodForInternship123456
+  expire-time: 7200000 # 2小时（单位：毫秒）
