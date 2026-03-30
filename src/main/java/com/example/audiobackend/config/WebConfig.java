@@ -31,6 +31,7 @@ public class WebConfig implements WebMvcConfigurer {
                     "/v3/api-docs/**",
                     "/v3/api-docs.yaml",
                     "/swagger-resources/**",
+                    "/api/ai/**",
                     "/webjars/**"); // ④ 排除登录接口,"/swagger-ui/**"（必须放行，否则无法登录）
     }
 

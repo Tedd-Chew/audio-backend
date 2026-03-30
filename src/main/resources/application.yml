@@ -31,3 +31,8 @@ spring:
 jwt:
   secret: AudiBackend2026IsGoodForInternship123456
   expire-time: 7200000 # 2小时（单位：毫秒）
+ai:
+  api:
+    url: https://ark.cn-beijing.volces.com/api/v3/chat/completions
+    api-key: 8eda20c1-1785-4e88-b6d5-d22484d00802
+    model: deepseek-v3-2-251201

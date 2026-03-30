@@ -604,3 +604,17 @@ public class JwtInterceptor implements HandlerInterceptor {
 ### 四、一句话总结 @Repository 的作用（针对 Mapper）
 @Repository 加在 Mapper 接口上，既不影响对象创建（核心靠 @Mapper），也不影响程序运行，唯一作用是「让 IDE 不报错 + 告诉开发者这是数据访问层」。
 高效做法：用 @MapperScan 批量扫描 Mapper 包，此时所有 Mapper 都不用加 @Mapper/@Repository，IDE 也不会报警告
+
+
+#  到底是什么？
+IOC 的全称是 Inversion of Control（控制反转），核心是「把对象的创建 / 管理权力，从「程序员手动控制」反转给「Spring 容器自动控制」。
+# 解耦
+
+
+# RAG 技术
+RAG（Retrieval-Augmented Generation）是一种结合了「检索（Retrieval）」和「生成（Generation）」的技术，核心思想是「先检索相关信息，再基于这些信息生成回答」，提升生成内容的准确性和丰富度。
+
+### ChatRequest 类里有个字段叫 message
+Spring 看到 JSON 里的 key 也叫 message
+它就自动匹配，把 value 取出来放进字段
+这是spring的自动绑定功能,我们的其他controller类也是这样传参的

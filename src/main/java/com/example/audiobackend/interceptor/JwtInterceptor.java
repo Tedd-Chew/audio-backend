@@ -25,10 +25,10 @@ public class JwtInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        // 原有逻辑：获取Token
+        // 获取Token
         String token = request.getHeader("Authorization");
 
-        // 原有逻辑：校验Token是否存在
+        // 校验Token是否存在
         if (token == null || token.isEmpty()) {
             throw new BusinessException(401, "未登录，请先登录！");
         }
