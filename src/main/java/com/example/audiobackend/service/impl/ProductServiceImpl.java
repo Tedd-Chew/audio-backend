@@ -8,10 +8,14 @@ import com.example.audiobackend.service.ProductService;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 // import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 
 @Service
@@ -38,17 +42,49 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private ProductMapper productMapper;
 
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+
+    private String getProductKey(Long id) {//用来获得产品的rediskey
+        return "product:" + id;
+    }
+
+
     // 依然加 @Override（因为实现了接口），只改方法内部逻辑
     @Override
     public List<Product> list() {
-        // 把 return productList 改成查询数据库
         return productMapper.selectList(null);
     }
 
     @Override
     public Product getById(Long id) {
-        // 替换原来的流式查询，改成查数据库
-        return productMapper.selectById(id);
+        //先从redis hash中取数据
+        //没有的话再查数据库
+        String redisKey = getProductKey(id);
+        Map<Object, Object> hashData = stringRedisTemplate.opsForHash().entries(redisKey);
+        if(!hashData.isEmpty()){
+            Product product = new Product();
+            product.setId(id);
+            product.setName((String) hashData.get("name"));
+            product.setPrice(Double.parseDouble((String) hashData.get("price")));
+            product.setDescription((String) hashData.get("description"));
+            product.setImageUrl((String) hashData.get("imageUrl"));
+            return product;
+        }
+        //缓存没命中，查数据库
+        Product product = productMapper.selectById(id);
+        if(product != null){
+            //将数据库数据缓存到redis hash中
+            Map<String, String> map = new HashMap<>();
+        map.put("id", product.getId().toString());
+        map.put("name", product.getName());
+        map.put("price", product.getPrice().toString());
+        map.put("description", product.getDescription());
+        map.put("imageUrl", product.getImageUrl());
+        stringRedisTemplate.opsForHash().putAll(redisKey, map);
+        stringRedisTemplate.expire(redisKey,12, TimeUnit.HOURS); // 设置过期时间，防止缓存雪崩
+        }
+        return product;
     }
 
     @Override
