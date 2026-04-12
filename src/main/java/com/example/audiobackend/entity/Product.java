@@ -15,4 +15,5 @@ public class Product {
     private Double price;
     private String description;
     private String imageUrl;// 注意：Java 用驼峰，MyBatis-Plus 会自动映射到数据库的 image_url
+    private Integer viewCount; // 新增一个字段，记录浏览量
 }

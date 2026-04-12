@@ -22,18 +22,30 @@ public class WebConfig implements WebMvcConfigurer {
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(jwtInterceptor)
-                .addPathPatterns("/**") // ③ 拦截所有请求（/** 表示所有路径）
-                .excludePathPatterns(
-                    "/api/user/login", 
-                    "/swagger-ui/**",
-                    "/swagger-ui.html",
-                    "/v3/api-docs/**",
-                    "/v3/api-docs.yaml",
-                    "/swagger-resources/**",
-                    "/api/ai/**",
-                    "/webjars/**"); // ④ 排除登录接口,"/swagger-ui/**"（必须放行，否则无法登录）
-    }
+    registry.addInterceptor(jwtInterceptor)
+            .addPathPatterns("/**") // 拦截所有
+            .excludePathPatterns(
+                // ====================== 必须放行 ======================
+                "/api/user/login",                // 登录
+
+                // 产品列表 + 分页（用户没登录也能看商品）
+                "/api/product/list",
+                "/api/product/page",
+                
+                // 商品详情（公开接口）
+                "/api/product/*",
+                
+                // AI 全部放行
+                "/api/ai/**",
+
+                // ====================== Swagger 放行 ======================
+                "/swagger-ui/**",
+                "/swagger-ui.html",
+                "/v3/api-docs/**",
+                "/swagger-resources/**",
+                "/webjars/**"
+            );
+}
 
     /**
      * 解决跨域问题（前端访问后端必加，否则浏览器报错）

@@ -3,12 +3,13 @@ package com.example.audiobackend.controller;
 import com.example.audiobackend.common.Result;
 import com.example.audiobackend.entity.Product;
 import com.example.audiobackend.service.ProductService;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.GetMapping;
+
 
 
 
@@ -27,6 +28,13 @@ public class ProductController {
         return Result.success(productService.list());
     }
 
+    @GetMapping("/page")
+    public Result<Page<Product>> page(
+            @RequestParam(defaultValue = "1") Integer pageNum,
+            @RequestParam(defaultValue = "10") Integer pageSize
+    ) {
+        return Result.success(productService.getProductPage(pageNum, pageSize));
+    }
     @GetMapping("/{id}")
     public Result<Product> getById(@PathVariable Long id) {
         return Result.success(productService.getById(id));
