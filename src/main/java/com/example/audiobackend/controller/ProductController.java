@@ -31,7 +31,7 @@ public class ProductController {
     @GetMapping("/page")
     public Result<Page<Product>> page(
             @RequestParam(defaultValue = "1") Integer pageNum,
-            @RequestParam(defaultValue = "10") Integer pageSize
+            @RequestParam(defaultValue = "3") Integer pageSize
     ) {
         return Result.success(productService.getProductPage(pageNum, pageSize));
     }

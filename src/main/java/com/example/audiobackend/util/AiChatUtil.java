@@ -27,7 +27,6 @@ public class AiChatUtil {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     // ================================
-    // 改名！！！不叫 chat，叫 sendToAi
     // 语义：纯粹把消息发给AI，拿结果
     // ================================
     public String sendToAi(String prompt) {
