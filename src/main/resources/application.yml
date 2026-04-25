@@ -34,7 +34,10 @@ spring:
     publisher-confirm-type: correlated
     listener:
       simple:
-        acknowledge-mode: auto
+        acknowledge-mode: auto #执行完自动发ACK
+        concurrency: 2        # 核心消费者线程数：2个
+        max-concurrency: 4    # 最大消费者线程数：4个（高峰期自动扩容）
+        prefetch: 10       # 每个消费者一次拉取10条消息（根据实际情况调整，过大可能导致内存压力）
 
 # ========== 你原有：JWT配置 ==========
 jwt:

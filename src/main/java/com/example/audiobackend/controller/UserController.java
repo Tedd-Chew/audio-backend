@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -21,17 +20,22 @@ public class UserController {
 
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
-    @Resource
-    private JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
+    private final SysUserService sysUserService;
+    private final PasswordUtil passwordUtil;
+    private final StringRedisTemplate stringRedisTemplate;
 
-    @Resource
-    private SysUserService sysUserService;
-
-    @Resource
-    private PasswordUtil passwordUtil;
-
-    @Resource
-    private StringRedisTemplate stringRedisTemplate;
+    public UserController(
+            JwtUtil jwtUtil,
+            SysUserService sysUserService,
+            PasswordUtil passwordUtil,
+            StringRedisTemplate stringRedisTemplate
+    ) {
+        this.jwtUtil = jwtUtil;
+        this.sysUserService = sysUserService;
+        this.passwordUtil = passwordUtil;
+        this.stringRedisTemplate = stringRedisTemplate;
+    }
 
     @PostMapping("/login")
     public Result<String> login(@RequestBody SysUser sysUser) {

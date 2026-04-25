@@ -23,7 +23,6 @@ public class JwtUtil {
 
     /**
      * 生成 Token
-     * @param username 用户名（存在 Token 里，方便后续识别用户）
      * @return 加密后的 Token 字符串
      */
 
@@ -48,7 +47,6 @@ public class JwtUtil {
     /**
      * 校验 Token 是否有效（没过期 + 签名正确）
      * @param token 前端传来的 Token
-     * @return true 有效，false 无效
      */
     // JwtUtil 的 validateToken 方法（改为 void，去掉 catch）
     public void validateToken(String token) {

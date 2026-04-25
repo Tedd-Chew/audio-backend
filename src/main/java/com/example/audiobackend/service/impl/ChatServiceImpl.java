@@ -1,13 +1,13 @@
 package com.example.audiobackend.service.impl;
 
 import com.example.audiobackend.service.ChatService;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import com.example.audiobackend.util.AiChatUtil;
@@ -18,23 +18,21 @@ import java.util.concurrent.TimeUnit;
 
 
 @Service
+@RequiredArgsConstructor
 public class ChatServiceImpl implements ChatService {
 
     private static final Logger log = LoggerFactory.getLogger(ChatServiceImpl.class);
 
-    @Autowired
-    private AiChatUtil aiChatUtil;
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-    @Autowired
-    private ThreadPoolExecutor executor;
+
+    private final AiChatUtil aiChatUtil;
+    private final JdbcTemplate jdbcTemplate;
+    private final ThreadPoolExecutor executor;
     // 注入Redis存结果
-    @Autowired
-    private StringRedisTemplate redisTemplate;
+    private final StringRedisTemplate redisTemplate;
 
     // ================== 你的原有线程池方法，完全不动 ==================
     @Override
-    public String chat(String visitorId, String userMessage) {
+    public void chat(String visitorId, String userMessage) {
         executor.submit(() -> {
             try {
                 log.info("【线程池】开始处理AI任务，visitorId：{}，消息：{}", visitorId, userMessage);
@@ -63,10 +61,9 @@ public class ChatServiceImpl implements ChatService {
             }
         });
 
-        return "AI 正在思考中";
     }
 
-    // ================== 下面是抽取的提示语方法，保持整洁 ==================
+    // ================== 下面是抽取的提示语方法 ==================
     private String buildPrompt(String userMessage) {
         return """
             你是智能助手。

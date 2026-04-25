@@ -5,9 +5,9 @@ import com.example.audiobackend.entity.Product;
 import com.example.audiobackend.mapper.ProductMapper;
 import com.example.audiobackend.service.ProductService;
 
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -22,18 +22,16 @@ import org.springframework.transaction.annotation.Transactional;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 @Service
+@RequiredArgsConstructor
 public class ProductServiceImpl implements ProductService {
 
     private static final Logger log = LoggerFactory.getLogger(ProductServiceImpl.class);
 
-    @Autowired
-    private ProductMapper productMapper;
+    private final ProductMapper productMapper;
 
-    @Autowired
-    private StringRedisTemplate stringRedisTemplate;
+    private final StringRedisTemplate stringRedisTemplate;
 
-    @Autowired
-    private ThreadPoolExecutor threadPoolExecutor;
+    private final ThreadPoolExecutor threadPoolExecutor;
 
     private String getProductKey(Long id) {
         return RedisConstant.PRODUCT_KEY_PREFIX + id;
@@ -105,7 +103,7 @@ public class ProductServiceImpl implements ProductService {
         String nullKey = getNullKey(id);
 
         try {
-            if (Boolean.TRUE.equals(stringRedisTemplate.hasKey(nullKey))) {
+            if (stringRedisTemplate.hasKey(nullKey)) {
                 log.debug("命中空值缓存，直接返回null，产品ID: {}", id);
                 return null;
             }
@@ -185,7 +183,9 @@ public class ProductServiceImpl implements ProductService {
             }
             return success;
         } catch (Exception e) {
-            log.error("添加产品异常，产品名称: {}, 错误: {}", product.getName(), e.getMessage());
+            if (product != null) {
+                log.error("添加产品异常，产品名称: {}, 错误: {}", product.getName(), e.getMessage());
+            }
             throw new RuntimeException("添加产品失败", e);
         }
     }
@@ -208,7 +208,9 @@ public class ProductServiceImpl implements ProductService {
             }
             return success;
         } catch (Exception e) {
-            log.error("更新产品异常，产品ID: {}, 错误: {}", product.getId(), e.getMessage());
+            if (product != null) {
+                log.error("更新产品异常，产品ID: {}, 错误: {}", product.getId(), e.getMessage());
+            }
             throw new RuntimeException("更新产品失败", e);
         }
     }

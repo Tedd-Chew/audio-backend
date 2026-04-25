@@ -1,6 +1,5 @@
 package com.example.audiobackend.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,12 +16,25 @@ public class AiController {
 
     // @Autowired
     // private ChatService chatService;弃用，逻辑不直接给service，而是发给rabbitmq等待消费者处理
-    @Autowired
-    private AiQuestionProducer aiQuestionProducer;
+    private final AiQuestionProducer aiQuestionProducer;
 
-    @Autowired
-    private StringRedisTemplate redisTemplate;
-    
+    private final StringRedisTemplate redisTemplate;
+
+    public AiController(AiQuestionProducer aiQuestionProducer, StringRedisTemplate redisTemplate)
+    {
+        this.aiQuestionProducer = aiQuestionProducer;
+        this.redisTemplate = redisTemplate;
+    }
+
+    @PostMapping("/api/ai/test")
+    public Map<String,String> test(@RequestBody Map<String,String> request){
+        String userMessage = request.get("message");
+        String visitorId = request.get("visitorId");
+        AiQuestionMessage message = new AiQuestionMessage(visitorId,userMessage);
+        aiQuestionProducer.sendTestQuestion(message);
+        return Map.of("reply", "AI 正在思考中，请稍等...");
+    }
+
     @PostMapping("/api/ai/chat")
     public Map<String, String> chat(@RequestBody Map<String, String> request) {
         String userMessage = request.get("message");

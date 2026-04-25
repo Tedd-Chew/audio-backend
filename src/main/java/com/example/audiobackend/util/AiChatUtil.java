@@ -2,6 +2,8 @@ package com.example.audiobackend.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;//用来发送Http请求和接收响应的工具
 import org.springframework.stereotype.Component;
@@ -13,7 +15,7 @@ import java.util.Map;
 
 @Component
 public class AiChatUtil {
-
+    private static final Logger log = LoggerFactory.getLogger(AiChatUtil.class);
     @Value("${ai.api.url}")
     private String apiUrl;
 
@@ -23,7 +25,7 @@ public class AiChatUtil {
     @Value("${ai.api.model}")
     private String model;
 
-    private final RestTemplate restTemplate = new RestTemplate();
+    private final RestTemplate restTemplate = new RestTemplate();//spring用来发http请求的工具
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     // ================================
@@ -55,7 +57,7 @@ public class AiChatUtil {
             return root.get("choices").get(0).get("message").get("content").asText();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("AI错误：{}", e.getMessage(), e);
             return "AI错误：" + e.getMessage();
         }
     }

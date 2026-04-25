@@ -14,9 +14,13 @@ import javax.annotation.Resource;
 @Configuration // ① 标识这是配置类，Spring 启动时加载
 public class WebConfig implements WebMvcConfigurer {
 
-    @Resource // ② 注入拦截器对象
-    private JwtInterceptor jwtInterceptor;
+    final private JwtInterceptor jwtInterceptor;
 
+
+    public WebConfig(JwtInterceptor jwtInterceptor)
+    {
+        this.jwtInterceptor = jwtInterceptor;
+    }
     /**
      * 注册拦截器：配置拦截规则
      */

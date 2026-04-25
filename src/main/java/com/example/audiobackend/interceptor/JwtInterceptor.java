@@ -4,13 +4,13 @@ import com.example.audiobackend.constant.RedisConstant;
 import com.example.audiobackend.exception.BusinessException;
 import com.example.audiobackend.util.JwtUtil;
 
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -19,14 +19,18 @@ public class JwtInterceptor implements HandlerInterceptor {
 
     private static final Logger log = LoggerFactory.getLogger(JwtInterceptor.class);
 
-    @Resource
-    private JwtUtil jwtUtil;
 
-    @Resource
-    private StringRedisTemplate stringRedisTemplate;
+    final private JwtUtil jwtUtil;
+    final private StringRedisTemplate stringRedisTemplate;
 
-    @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public JwtInterceptor(JwtUtil jwtUtil,StringRedisTemplate stringRedisTemplate)
+    {
+        this.jwtUtil = jwtUtil;
+        this.stringRedisTemplate = stringRedisTemplate;
+    }
+
+    @Override//这里spring MVC会自动传参。
+    public boolean preHandle(HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull Object handler) throws Exception {
         String token = request.getHeader("Authorization");
         String requestUri = request.getRequestURI();
 
@@ -55,7 +59,7 @@ public class JwtInterceptor implements HandlerInterceptor {
 
             String redisKey = RedisConstant.TOKEN_PREFIX + userId;
 
-            if (!Boolean.TRUE.equals(stringRedisTemplate.hasKey(redisKey))) {
+            if (!stringRedisTemplate.hasKey(redisKey)) {
                 log.warn("Token已失效（Redis中不存在），用户ID：{}，URI：{}", userId, requestUri);
                 throw new BusinessException(401, "Token已失效（已退出登录）！");
             }

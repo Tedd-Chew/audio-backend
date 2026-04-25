@@ -11,9 +11,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @SpringBootApplication
 @EnableScheduling//告诉spring我要使用定时任务。
 public class AudiobackendApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(AudiobackendApplication.class, args);
 	}
-
 }
